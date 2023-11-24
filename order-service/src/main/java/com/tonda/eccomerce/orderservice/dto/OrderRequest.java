@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
-    private List<OrderLineItemsDto> orderLineItemsDtoList;
+    private List<OrderLineItemsDto> orderLineItemsDtoList; // this variable name is the name of the key in the request
 }

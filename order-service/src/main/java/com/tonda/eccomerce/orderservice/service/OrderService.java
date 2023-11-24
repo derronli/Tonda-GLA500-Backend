@@ -41,8 +41,8 @@ public class OrderService {
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.setPrice(orderLineItemsDto.getPrice());
-        orderLineItems.setQuantity(orderLineItems.getQuantity());
-        orderLineItems.setSkuCode(orderLineItems.getSkuCode());
+        orderLineItems.setQuantity(orderLineItemsDto.getQuantity());
+        orderLineItems.setSkuCode(orderLineItemsDto.getSkuCode());
         return orderLineItems;
     }
 }
