@@ -46,7 +46,7 @@ public class OrderService {
         // call the service (remember based on our endpoint implementation -> we need the request parameters in the url)
         // web client will build it for us with uriBuilder !
         InventoryResponse[] inventoryResponses = webClient.get()
-                                  .uri("http://localhost:8082/api/inventory",
+                                  .uri("http://inventory-service/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                                   .retrieve()
                                   .bodyToMono(InventoryResponse[].class) // data type in the framework. need it to read response + will parse the response to an array
