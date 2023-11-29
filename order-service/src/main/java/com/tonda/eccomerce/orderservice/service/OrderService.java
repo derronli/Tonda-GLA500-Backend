@@ -19,12 +19,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, WebClient webClient) {
+    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder) {
         this.orderRepository = orderRepository;
-        this.webClient = webClient;
+        this.webClientBuilder = webClientBuilder;
     }
 
     public void placeOrder(OrderRequest orderRequest) {
@@ -45,7 +45,7 @@ public class OrderService {
 
         // call the service (remember based on our endpoint implementation -> we need the request parameters in the url)
         // web client will build it for us with uriBuilder !
-        InventoryResponse[] inventoryResponses = webClient.get()
+        InventoryResponse[] inventoryResponses = webClientBuilder.build().get()
                                   .uri("http://inventory-service/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                                   .retrieve()
