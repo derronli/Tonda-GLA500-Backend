@@ -7,10 +7,12 @@ import java.util.UUID;
 import com.tonda.eccomerce.orderservice.dto.InventoryResponse;
 import com.tonda.eccomerce.orderservice.dto.OrderLineItemsDto;
 import com.tonda.eccomerce.orderservice.dto.OrderRequest;
+import com.tonda.eccomerce.orderservice.event.OrderPlacedEvent;
 import com.tonda.eccomerce.orderservice.model.Order;
 import com.tonda.eccomerce.orderservice.model.OrderLineItems;
 import com.tonda.eccomerce.orderservice.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,11 +22,13 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder) {
+    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder, KafkaTemplate kafkaTemplate) {
         this.orderRepository = orderRepository;
         this.webClientBuilder = webClientBuilder;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public String placeOrder(OrderRequest orderRequest) {
@@ -60,6 +64,7 @@ public class OrderService {
         if (allProductsInStock) {
             // Save to DB by interfacing with repository
             orderRepository.save(order);
+            kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
             return "Order Placed Successfully";
         }
         else {
